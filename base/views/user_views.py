@@ -20,7 +20,9 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         token = super().get_token(user)
 
         # Add custom claims
-        token['username'] = user.username
+        token['name'] = user.first_name
+        if token['name'] == '':
+            token['name'] = user.email
         token['email'] = user.email
         
         return token
@@ -52,6 +54,23 @@ def registerUser(request):
 def getUserProfile(request):
     user = request.user
     serializer = UserSerializer(user, many=False)
+    return Response(serializer.data)
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def updateUserProfile(request):
+    user = request.user
+    serializer = UserSerializerWithToken(user, many=False)
+
+    data = request.data 
+    user.first_name=data['name']
+    user.username=data['email']
+    user.email=data['email']
+    if data['password'] != '':
+        user.password=make_password(data['password'])
+    
+    user.save()
+
     return Response(serializer.data)
 
 @api_view(['GET'])
