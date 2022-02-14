@@ -4,10 +4,11 @@ from django.contrib.auth.models import User
 from .models import Product, Order, OrderItem, ShippingAddress
 
 
-class ProductSerializer( serializers.ModelSerializer ):
+class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = '__all__'
+
 
 class UserSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField(read_only=True)
@@ -33,41 +34,45 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class UserSerializerWithToken(UserSerializer):
-    #token = serializers.SerializerMethodField(read_only=True)
+    # token = serializers.SerializerMethodField(read_only=True)
     access = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = User
-        fields = ['id', '_id', 'username', 'email', 'name', 'isAdmin', 'access']
+        fields = ['id', '_id', 'username', 'email', 'name',
+                  'isAdmin', 'access']
 
     def get_access(self, obj):
         token = RefreshToken.for_user(obj)
         return str(token.access_token)
 
-class ShippingAddressSerializer( serializers.ModelSerializer ):
+
+class ShippingAddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = ShippingAddress
         fields = '__all__'
 
-class OrderItemSerializer( serializers.ModelSerializer ):
+
+class OrderItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderItem
         fields = '__all__'
 
-class OrderSerializer( serializers.ModelSerializer ):
-    orderItems = serializers.SerializerMethodField( read_only=True )
-    shippingAddress = serializers.SerializerMethodField( read_only=True )
-    user = serializers.SerializerMethodField( read_only=True )
-    
+
+class OrderSerializer(serializers.ModelSerializer):
+    orderItems = serializers.SerializerMethodField(read_only=True)
+    shippingAddress = serializers.SerializerMethodField(read_only=True)
+    user = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = Order
         fields = '__all__'
-    
+
     def get_orderItems(self, obj):
         items = obj.orderitem_set.all()
         serializer = OrderItemSerializer(items, many=True)
         return serializer.data
-    
+
     def get_shippingAddress(self, obj):
         try:
             address = obj.shippingaddress
