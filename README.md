@@ -6,7 +6,7 @@ This is the source code of Ecommerce Website Backend implemented in Django Rest 
 
 ## Routes in Postman
 
-![Routes in Postman](https://drive.google.com/uc?export=view&id=10PFJyvdB_nBuis3Gy9C5snUJE86T5vfk)
+![Routes in Postman](https://github.com/josesoal/my-images/blob/master/ecommerce-website/postman.png?raw=true)
 
 
 ---
